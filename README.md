@@ -149,3 +149,8 @@ Initial prototype
 Doc formating fix.
 
 Changed session management URL from /Session/User to /Session/Self/User
+
+0.0.1-alpha.2
+-------------
+
+Update dev dependencies for express-user-local to version 0.0.1-alpha1

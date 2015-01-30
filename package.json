@@ -1,6 +1,6 @@
 {
   "name": "express-user",
-  "version": "0.0.1-alpha.1",
+  "version": "0.0.1-alpha.2",
   "description": "Ressource Oriented Express Middleware to Manage Users.",
   "keywords": [
     "Express",
@@ -34,7 +34,7 @@
     "user-store": "~1.0.1",
     "body-parser": "~1.10.2",
     "mongodb": "~1.4.29",
-    "express-user-local": "0.0.0"
+    "express-user-local": "0.0.1-alpha.1"
   },
   "license": "MIT",
   "directories": {
