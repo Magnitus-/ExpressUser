@@ -28,18 +28,18 @@ This will require that I modify the user-store project (and expected API) to han
 URL Map
 =======
 
-Universal URLs:
-POST /Users -> Account creation
-PATCH /User/Self -> Account modification (using session to identify the account)
-DELETE /User/Self -> Account deletion (using session to identify the account)
-GET /User/Self -> Fetching account info (using session to identify the account)
-PUT /Session/User -> Login
-DELETE /Session/User -> Logout
+1) Universal URLs:
+- POST /Users -> Account creation
+- PATCH /User/Self -> Account modification (using session to identify the account)
+- DELETE /User/Self -> Account deletion (using session to identify the account)
+- GET /User/Self -> Fetching account info (using session to identify the account)
+- PUT /Session/User -> Login
+- DELETE /Session/User -> Logout
 
-Admin URLs:
-PATCH /User/:Field/:ID -> Account modification (using the ID of the given Field to identify the account)
-DELETE /User/:Field/:ID -> Account deletion (using the ID of the given Field to identify the account)
-GET /User/:Field/:ID -> Fetching account info (using the ID of the given Field to identify the account)
+2) Admin URLs:
+- PATCH /User/:Field/:ID -> Account modification (using the ID of the given Field to identify the account)
+- DELETE /User/:Field/:ID -> Account deletion (using the ID of the given Field to identify the account)
+- GET /User/:Field/:ID -> Fetching account info (using the ID of the given Field to identify the account)
 
 Architecture
 ============
@@ -49,8 +49,11 @@ Express-User relies on 2 components (eventually at least 3):
 - express-user itself that does the following: 
 
 -secure connection checking (HTTPS or local)
+
 -Access control: privilege check to ensure the admin URLs are accessed by an admin and that the user is logged in when accessing the Self URLs
+
 -Handle accout manipulation
+
 -Provide a routing callback for authentication (to check the user is either logged in or belongs to a given group)
 
 - A validator (currently, the express-user-local npm repo implements validation for an email/username/password scheme)
@@ -133,3 +136,16 @@ Future
 ======
 
 More in-depth details to come once the API is finalized.
+
+Versions History
+================
+
+0.0.0 
+-----
+
+Initial prototype
+
+0.0.1
+-----
+
+Doc formating fix.

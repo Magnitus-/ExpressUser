@@ -1,6 +1,6 @@
 {
   "name": "express-user",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Ressource Oriented Express Middleware to Manage Users.",
   "keywords": [
     "Express",
@@ -38,6 +38,10 @@
   },
   "license": "MIT",
   "directories": {
+    "example": "example",
     "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
   }
 }
