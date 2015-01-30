@@ -68,7 +68,7 @@ MongoDB.MongoClient.connect("mongodb://localhost:27017/"+RandomIdentifier, {nati
             });
             
             //Probably another questionable one to put in a production environment for regular users
-            App.get('/Session/User', function(Req, Res, Next) {
+            App.get('/Session/Self/User', function(Req, Res, Next) {
                 if(Req.session.User)
                 {
                     Res.json(Req.session.User);

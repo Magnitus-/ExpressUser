@@ -16,8 +16,6 @@ The API is very likely to change due to:
 
 - I want to implement session consistency (for logged in users) with user profile modifications (for updates and deletions)
 
-- Strongly considering changing the URLs for Login and Logout from '/Session/User' to '/Session/Self/User' to clarify that the ressource being operated on is the requester's own session.
-
 Known Bug(s)
 ============
 
@@ -33,8 +31,8 @@ URL Map
 - PATCH /User/Self -> Account modification (using session to identify the account)
 - DELETE /User/Self -> Account deletion (using session to identify the account)
 - GET /User/Self -> Fetching account info (using session to identify the account)
-- PUT /Session/User -> Login
-- DELETE /Session/User -> Logout
+- PUT /Session/Self/User -> Login
+- DELETE /Session/Self/User -> Logout
 
 2) Admin URLs:
 - PATCH /User/:Field/:ID -> Account modification (using the ID of the given Field to identify the account)
@@ -145,7 +143,9 @@ Versions History
 
 Initial prototype
 
-0.0.1
------
+0.0.1-alpha.1
+-------------
 
 Doc formating fix.
+
+Changed session management URL from /Session/User to /Session/Self/User

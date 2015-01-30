@@ -23,12 +23,12 @@ jQuery.fn.Send = function() {
     if(Section=='Login')
     {
         Method = 'PUT';
-        URL = '/Session/User';
+        URL = '/Session/Self/User';
     }
     else if(Section=='Logout')
     {
         Method = 'DELETE';
-        URL = '/Session/User';
+        URL = '/Session/Self/User';
     }
     else if(Section=='Add')
     {
@@ -44,7 +44,7 @@ jQuery.fn.Send = function() {
         }
         else if(Data['UrlEmail'])
         {
-            URL = '/User/Email/'+Data['UrlUsername'];
+            URL = '/User/Email/'+Data['UrlEmail'];
         }
         else
         {
@@ -86,7 +86,7 @@ jQuery.fn.Send = function() {
     else if(Section=='GetSession')
     {
         Method = 'GET';
-        URL = '/Session/User';
+        URL = '/Session/Self/User';
     }
     else if(Section=='Elevate')
     {
