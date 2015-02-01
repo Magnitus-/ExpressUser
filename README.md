@@ -19,9 +19,7 @@ The API is very likely to change due to:
 Known Bug(s)
 ============
 
-When setting an unique index on user fields, duplicate field insertions (ie, creating a second user with the same username) gets treated as a system error.
-
-This will require that I modify the user-store project (and expected API) to handle duplicate insert error as an input error, not a database one.
+Sessions get out of sync when users are updated or deleted.
 
 URL Map
 =======
@@ -154,3 +152,10 @@ Changed session management URL from /Session/User to /Session/Self/User
 -------------
 
 Update dev dependencies for express-user-local to version 0.0.1-alpha1
+
+0.0.1-alpha.3
+-------------
+
+- Updated dev dependencies for user-store to version 1.1.1
+
+- Modified bad input handling to take into account the more detailed constraint errors of user-store and return 400 rather than a 500 system error for submissions that violate constraints.
