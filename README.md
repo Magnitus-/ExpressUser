@@ -14,12 +14,10 @@ The API is very likely to change due to:
 
 - While I do not foresee that many architectural changes for this, I do not rule them out entirely as I integrate the following features in my web applications: ajax feedback on forms (ex: immediate feedback if username is taken during registration), email verification, csrf tokens, brute force mitigation for login, etc. 
 
-- I want to implement session consistency (for logged in users) with user profile modifications (for updates and deletions)
-
 Known Bug(s)
 ============
 
-Sessions get out of sync when users are updated or deleted.
+...
 
 URL Map
 =======
@@ -78,6 +76,34 @@ This means that the vast majority of the bias concerning what your user fields s
 As such, it should ensure that all the fields you expect for various actions (ex: password) are there and that their values follow whichever constraints you wish to place upon them.
 
 You should be as conservative as your application domains allows concerning what you'll accept.
+
+Session Synchronization
+=======================
+
+For a smooth seemless functionality to users, sessions and user accounts they point to need to be in sync, such that when accounts are updated or deleted, this is reflected in sessions pointing to it.
+
+The only implemented solution ais the ExpressUser.SessionRoute route, which should be placed after session initialization, but before any logic that uses sessions.
+
+It returns a route, taking as arguments the user store and a string representing a constant field that will never change for a particular user (_id works if the database is MongoDB).
+
+I didn't integrate this in the main express-user route so that you can place user/session synchronization on any path that uses sessions without being required to do same for the main express-user route.
+
+For example, you might decide to set the base path of express-user's main route to /ExpressUser, but you should probably put session synchronization on /.
+
+Future Optimisation
+-------------------
+
+In the longer term, I'm considering implementing a read-only capability for express-session-mongodb which will allow us to implement the insurance that user info is never re-saved with the remainder of the session.
+
+From there, sessions will be updated directly when users are updated/deleted (without fear of those changes being overwritted by session re-saves).
+
+The advantages of this implementation would be to save a trip to the user store to read the user info for each request, at the cost of making profile updates and deletions more expensive operations (which would be ok since they are a lot rarer).
+
+The disadvantages would be a greater dependency to my session-store (since other implementations are extremely unlikely to implement something like this with the same API) and sessions getting out-of-sync anyways in the case of a failure after the user is updated, but before sessions can be updated (since MongoDB is transaction free for complex operations of this nature)
+
+For the above reasons, when I get around to implementing this, it will be an optional feature.
+
+Given that this would be an optimisation rather than a requirement for functionality, I'll probably finish functionality before I get around to implementing this.
 
 Dependencies
 ============
@@ -159,3 +185,8 @@ Update dev dependencies for express-user-local to version 0.0.1-alpha1
 - Updated dev dependencies for user-store to version 1.1.1
 
 - Modified bad input handling to take into account the more detailed constraint errors of user-store and return 400 rather than a 500 system error for submissions that violate constraints.
+
+0.0.1-alpha.4
+-------------
+
+Added session sychronization support

@@ -28,7 +28,7 @@ MongoDB.MongoClient.connect("mongodb://localhost:27017/"+RandomIdentifier, {nati
             
             App.use(Session({
                 'secret': 'qwerty!',
-                'resave': false,
+                'resave': true,
                 'saveUninitialized': true,
                 'store': SessionStore
             }));
@@ -37,6 +37,7 @@ MongoDB.MongoClient.connect("mongodb://localhost:27017/"+RandomIdentifier, {nati
             App.use(BodyParser.json());
             
             var UserRouter = ExpressUser(UserStore, {'Validator': ExpressUserLocal()});
+            App.use(ExpressUser.SessionRoute(UserStore, '_id'));
             App.use(UserRouter);
             
             //Obviously for testing purposes, never put this in a production environment without rock-solid access control
