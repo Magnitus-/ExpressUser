@@ -1,6 +1,6 @@
 {
   "name": "express-user",
-  "version": "0.0.1-alpha.4",
+  "version": "0.0.1-alpha.5",
   "description": "Ressource Oriented Express Middleware to Manage Users.",
   "keywords": [
     "Express",
