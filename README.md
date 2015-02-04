@@ -29,6 +29,7 @@ URL Map
 - GET /User/Self -> Fetching account info (using session to identify the account)
 - PUT /Session/Self/User -> Login
 - DELETE /Session/Self/User -> Logout
+- GET /Users/Count/:Field/:ID -> Count the number of users with the given field
 
 2) Admin URLs:
 - PATCH /User/:Field/:ID -> Account modification (using the ID of the given Field to identify the account)
@@ -190,3 +191,11 @@ Update dev dependencies for express-user-local to version 0.0.1-alpha1
 -------------
 
 Added session sychronization support
+
+0.0.1-alpha.5
+-------------
+
+- Moved access control logic into a separate module.
+- Changed the validator API a bit so that the validator can access Roles.
+- Updated user-store dependency to version 1.2.0.
+- Updated dev dependency of express-user-local to 0.0.1-alpha.2
