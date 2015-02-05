@@ -29,7 +29,7 @@ URL Map
 - GET /User/Self -> Fetching account info (using session to identify the account)
 - PUT /Session/Self/User -> Login
 - DELETE /Session/Self/User -> Logout
-- GET /Users/Count/:Field/:ID -> Count the number of users with the given field
+- GET /Users/:Field/:ID/Count -> Fetching the count of users with the given value for the given field
 
 2) Admin URLs:
 - PATCH /User/:Field/:ID -> Account modification (using the ID of the given Field to identify the account)
@@ -77,6 +77,8 @@ This means that the vast majority of the bias concerning what your user fields s
 As such, it should ensure that all the fields you expect for various actions (ex: password) are there and that their values follow whichever constraints you wish to place upon them.
 
 You should be as conservative as your application domains allows concerning what you'll accept.
+
+Also, you validator should ensure that for the route /Users/:Field/:ID/Count/, only publicly available information should be selectable for regular users (see express-user-local code for an implementation of this).
 
 Session Synchronization
 =======================
@@ -209,3 +211,9 @@ Added session sychronization support
 - Updated dev dependency of mongodb to version 1.4.30
 - Did a bit of refactoring.
 - Fixed a bug that would cause the HidePassword option to be ignored when fetching user info.
+
+0.0.1-alpha.7
+-------------
+
+- Fixed doc error
+- Added '/Users/:Field/:ID/Count/' consideration for validator security section of the doc.
