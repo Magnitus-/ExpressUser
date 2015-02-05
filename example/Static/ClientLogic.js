@@ -120,3 +120,23 @@ jQuery('body').on('click', 'button', function(Event) {
     Section.children('form').Send();
 });
 
+jQuery('body').on('keyup', '.Add input[name=Username]', function(Event) {
+    var Input = jQuery(this);
+    var PreviousValue = Input.val();
+    jQuery('section.Add p.Error').html('');
+    setTimeout(function(){
+        if(Input.val()==PreviousValue)
+        {
+            var Options = {'cache': false, 'type': 'GET', 'dataType': 'json'};
+            jQuery.ajax('/Users/Username/'+Input.val()+'/Count', Options).done(function(Data, TextStatus, XHR) {
+                if(Data.Count>0)
+                {
+                    jQuery('section.Add p.Error').html('Warning, username '+Input.val()+' already taken.');
+                }
+            }).fail(function(XHR, TextStatus, Error) {
+                console.log('Request to '+Input.val()+' failed. Return code is '+XHR.status+'.');
+            });
+        }
+    }, 1000)
+});
+

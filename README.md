@@ -12,7 +12,7 @@ The API is very likely to change due to:
 
 - My eventual desire to decouple the response logic (return codes and content + logging) from the rest of the library in order to allow for specialized response plugins (ex: HTML forms, single-page clients with Ajax, collection+JSON hypermedia, etc)
 
-- While I do not foresee that many architectural changes for this, I do not rule them out entirely as I integrate the following features in my web applications: ajax feedback on forms (ex: immediate feedback if username is taken during registration), email verification, csrf tokens, brute force mitigation for login, etc. 
+- While I do not foresee that many architectural changes for this, I do not rule them out entirely as I integrate the following features in my web applications:  email verification, csrf tokens, brute force mitigation for login, etc. 
 
 Known Bug(s)
 ============
@@ -199,3 +199,13 @@ Added session sychronization support
 - Changed the validator API a bit so that the validator can access Roles.
 - Updated user-store dependency to version 1.2.0.
 - Updated dev dependency of express-user-local to 0.0.1-alpha.2
+
+0.0.1-alpha.6
+-------------
+
+- Added support for the /Users/:Field/:ID/Count/ route.
+- Used the above to augment the example with an automated check to tell you if a Username is taken during registration.
+- Updated dev dependency of express-user-local to version 0.0.1-alpha.3
+- Updated dev dependency of mongodb to version 1.4.30
+- Did a bit of refactoring.
+- Fixed a bug that would cause the HidePassword option to be ignored when fetching user info.
