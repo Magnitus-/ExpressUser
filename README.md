@@ -12,7 +12,7 @@ The API is very likely to change due to:
 
 - My eventual desire to decouple the response logic (return codes and content + logging) from the rest of the library in order to allow for specialized response plugins (ex: HTML forms, single-page clients with Ajax, collection+JSON hypermedia, etc)
 
-- While I do not foresee that many architectural changes for this, I do not rule them out entirely as I integrate the following features in my web applications:  email verification, csrf tokens, brute force mitigation for login, etc. 
+- While I do not foresee that many architectural changes for this, I do not rule them out entirely as I integrate the following features in my web applications:  email verification, csrf tokens, etc. 
 
 Known Bug(s)
 ============
@@ -217,3 +217,10 @@ Added session sychronization support
 
 - Fixed doc error
 - Added '/Users/:Field/:ID/Count/' consideration for validator security section of the doc.
+
+0.0.1-alpha.8
+-------------
+
+- Updated dev dependency of express-user-local to 0.0.1-alpha.4.
+- Added express-brute and express-brute-mongo to the dev dependencies
+- Augmented the example with brute-force mitigation
