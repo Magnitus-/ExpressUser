@@ -2,15 +2,24 @@
 //MIT License: https://raw.githubusercontent.com/Magnitus-/ExpressUser/master/License.txt
 
 jQuery.fn.ToJSON = function(IncludeEmpty) {
-    var Inputs = this.children('input');
+    var FieldSets = this.children('fieldset');
     var ToReturn = {};
-    Inputs.each(function(Index, Element) {
+    FieldSets.each(function(Index, Element) {
         var WrappedElement = jQuery(Element);
-        var Value = WrappedElement.val();
-        if(Value.length>0||IncludeEmpty)
-        {
-            ToReturn[WrappedElement.attr('name')] = Value;
-        }
+        var Label = WrappedElement.attr('class');
+        var Inputs = WrappedElement.children('input');
+        Inputs.each(function(Index, Element) {
+            var WrappedElement = jQuery(Element);
+            var Value = WrappedElement.val();
+            if(Value.length>0||IncludeEmpty)
+            {
+                if(typeof(ToReturn[Label])=='undefined')
+                {
+                    ToReturn[Label] = {};
+                }
+                ToReturn[Label][WrappedElement.attr('name')] = Value;
+            }
+        });
     });
     return ToReturn;
 }
@@ -38,49 +47,37 @@ jQuery.fn.Send = function() {
     else if(Section=='Modify')
     {
         Method = 'PATCH';
-        if(Data['UrlUsername'])
+        if(!Data['Url'])
         {
-            URL = '/User/Username/'+Data['UrlUsername'];
-        }
-        else if(Data['UrlEmail'])
-        {
-            URL = '/User/Email/'+Data['UrlEmail'];
+            URL = '/User/Self';
         }
         else
         {
-            URL = '/User/Self';
+            URL = '/User';
         }
     }
     else if(Section=='Delete')
     {
         Method = 'DELETE';
-        if(Data['Username'])
+        if(!Data['Url'])
         {
-            URL = '/User/Username/'+Data['Username'];
-        }
-        else if(Data['Email'])
-        {
-            URL = '/User/Email/'+Data['Email'];
+            URL = '/User/Self';
         }
         else
         {
-            URL = '/User/Self';
+            URL = '/User';
         }
     }
     else if(Section=='Get')
     {
         Method = 'GET';
-        if(Data['Username'])
+        if(!Data['Url'])
         {
-            URL = '/User/Username/'+Data['Username'];
-        }
-        else if(Data['Email'])
-        {
-            URL = '/User/Email/'+Data['Email'];
+            URL = '/User/Self';
         }
         else
         {
-            URL = '/User/Self';
+            URL = '/User';
         }
     }
     else if(Section=='GetSession')
@@ -92,6 +89,18 @@ jQuery.fn.Send = function() {
     {
         Method = 'POST';
         URL = '/User/Self/Memberships/Admin';
+    }
+    
+    if(Data['Url'])
+    {
+        if(Data['Url']['Username'])
+        {
+            URL = URL + '/Username/'+Data['Url']['Username'];
+        }
+        else
+        {
+            URL = URL + '/Email/'+Data['Url']['Email'];
+        }
     }
     
     var Options = {'cache': false, 'type': Method};

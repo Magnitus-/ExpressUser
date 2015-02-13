@@ -224,3 +224,9 @@ Added session sychronization support
 - Updated dev dependency of express-user-local to 0.0.1-alpha.4.
 - Added express-brute and express-brute-mongo to the dev dependencies
 - Augmented the example with brute-force mitigation
+
+0.0.1-alpha.9
+-------------
+
+- Updated dev dependency of express-user-local to 0.0.1-alpha.5.
+- Updated the client-side of the example to changes made to express-user-local.

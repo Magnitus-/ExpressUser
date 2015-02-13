@@ -10,10 +10,12 @@ MIT License: https://raw.githubusercontent.com/Magnitus-/ExpressUser/master/Lice
         <section class="Login">
             <form>
                 <h2>Login</h2>
-                <label>Email:</label>
-                <input type="text" name="Email" />
-                <label>Password:</label>
-                <input type="text" name="Password" />
+                <fieldset class="User">
+                    <label>Email:</label>
+                    <input type="text" name="Email" />
+                    <label>Password:</label>
+                    <input type="text" name="Password" />
+                </fieldset>
                 <button>Submit</button>
             </form>
         </section>
@@ -26,12 +28,14 @@ MIT License: https://raw.githubusercontent.com/Magnitus-/ExpressUser/master/Lice
         <section class="Add">
             <form>
                 <h2>Create Profile</h2>
-                <label>Username:</label>
-                <input type="text" name="Username" />
-                <label>Email:</label>
-                <input type="text" name="Email" />
-                <label>Password:</label>
-                <input type="text" name="Password" />
+                <fieldset class="User">
+                    <label>Username:</label>
+                    <input type="text" name="Username" />
+                    <label>Email:</label>
+                    <input type="text" name="Email" />
+                    <label>Password:</label>
+                    <input type="text" name="Password" />
+                </fieldset>
                 <button>Submit</button>
             </form>
             <p class='Error'></p>
@@ -39,40 +43,52 @@ MIT License: https://raw.githubusercontent.com/Magnitus-/ExpressUser/master/Lice
         <section class="Modify">
             <form>
                 <h2>Change Profile</h2>
-                <label>URL Username:</label>
-                <input type="text" name="UrlUsername" />
-                <label>URL Email:</label>
-                <input type="text" name="UrlEmail" />
-                <label>Username:</label>
-                <input type="text" name="Username" />
-                <label>Email:</label>
-                <input type="text" name="Email" />
-                <label>Password:</label>
-                <input type="text" name="NewPassword" />
-                <label>Old Password:</label>
-                <input type="text" name="Password" />
+                <fieldset class="Url">
+                    <label>URL Username:</label>
+                    <input type="text" name="Username" />
+                    <label>URL Email:</label>
+                    <input type="text" name="Email" />
+                </fieldset>
+                <fieldset class="Update">
+                    <label>Username:</label>
+                    <input type="text" name="Username" />
+                    <label>Email:</label>
+                    <input type="text" name="Email" />
+                    <label>Password:</label>
+                    <input type="text" name="Password" />
+                </fieldset>
+                <fieldset class="User">
+                    <label>Old Password:</label>
+                    <input type="text" name="Password" />
+                </fieldset>
                 <button>Submit</button>
             </form>
         </section>
         <section class="Delete">
             <form>
                 <h2>Delete Profile</h2>
-                <label>Username:</label>
-                <input type="text" name="Username" />
-                <label>Email:</label>
-                <input type="text" name="Email" />
-                <label>Password:</label>
-                <input type="text" name="Password" />
+                <fieldset class="Url">
+                    <label>Username:</label>
+                    <input type="text" name="Username" />
+                    <label>Email:</label>
+                    <input type="text" name="Email" />
+                </fieldset>
+                <fieldset class="User">
+                    <label>Password:</label>
+                    <input type="text" name="Password" />
+                </fieldset>
                 <button>Submit</button>
             </form>
         </section>
         <section class="Get">
             <form>
                 <h2>Get Profile</h2>
-                <label>Username:</label>
-                <input type="text" name="Username" />
-                <label>Email:</label>
-                <input type="text" name="Email" />
+                <fieldset class="Url">
+                    <label>Username:</label>
+                    <input type="text" name="Username" />
+                    <label>Email:</label>
+                    <input type="text" name="Email" />
+                </fieldset>
                 <button>Submit</button>
             </form>
         </section>
