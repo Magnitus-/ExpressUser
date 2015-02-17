@@ -230,3 +230,9 @@ Added session sychronization support
 
 - Updated dev dependency of express-user-local to 0.0.1-alpha.5.
 - Updated the client-side of the example to changes made to express-user-local.
+
+0.0.1-alpha.10
+--------------
+
+- Updated dev dependency of express-user-local to 0.0.1-alpha.7.
+- Modified example (client and server) to include csrf mitigation.

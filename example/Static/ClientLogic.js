@@ -21,6 +21,11 @@ jQuery.fn.ToJSON = function(IncludeEmpty) {
             }
         });
     });
+    var Csrf = this.children('input[name=_csrf]');
+    Csrf.each(function(Index, Element) {
+        var WrappedElement = jQuery(Element);
+        ToReturn[WrappedElement.attr('name')] = WrappedElement.val();
+    });
     return ToReturn;
 }
 

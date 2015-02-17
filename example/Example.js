@@ -2,9 +2,11 @@
 //MIT License: https://raw.githubusercontent.com/Magnitus-/ExpressUser/master/License.txt
 
 var Http = require('http');
-var Express = require('express');
 var Path = require('path');
+
+var Express = require('express');
 var BodyParser = require('body-parser');
+var Csrf = require('csurf');
 
 var MongoDB = require('mongodb');
 var Session = require('express-session');
@@ -24,14 +26,18 @@ var RandomIdentifier = 'ExpressUserExample'+Math.random().toString(36).slice(-8)
 var SessionStoreOptions = {'TimeToLive': 300, 'IndexSessionID': true, 'DeleteFlags': true};
 var Wait = 25*60*60*1000;
 var ExpressBruteOptions = {'freeRetries': 10, 'minWait': Wait, 'maxWait': Wait, 'lifetime': 60*60, 'refreshTimeoutOnRequest': false};
+
 var StaticPath = Path.resolve(__dirname, 'Static');
-var Index = Path.resolve(Path.resolve(__dirname, "Views"), "Index.html");
+App.set("view engine", "ejs");
+App.set("views", Path.resolve(__dirname, "Views"));
+
+var CsrfRoute = Csrf({ cookie: false });
 
 MongoDB.MongoClient.connect("mongodb://localhost:27017/"+RandomIdentifier, {native_parser:true}, function(Err, DB) {
     DB.createCollection('PasswordAccess', {'w': 1}, function(Err, BruteCollection) {
         var BruteStore = new BruteStoreAPI(function (Ready) {Ready(BruteCollection)});
         var ExpressBrute = new ExpressBruteAPI(BruteStore, ExpressBruteOptions);
-        var ExpressUserLocalOptions = {'BruteForceRoute': ExpressBrute.prevent};
+        var ExpressUserLocalOptions = {'BruteForceRoute': ExpressBrute.prevent, 'CsrfRoute': CsrfRoute};
         UserStoreAPI(DB, {'Email': {'Unique': 1, 'NotNull': 1}, 'Username': {'Unique': 1, 'NotNull': 1}, 'Password': {'NotNull': 1}}, function(Err, UserStore) {
             SessionStoreAPI(DB, function(Err, SessionStore) {
                 
@@ -89,8 +95,21 @@ MongoDB.MongoClient.connect("mongodb://localhost:27017/"+RandomIdentifier, {nati
                     }
                 });
                 
-                App.get('/', function(Req,Res) {
-                    Res.sendFile(Index);
+                App.get('/', CsrfRoute);
+                App.get('/', function(Req, Res) {
+                    Res.render("Index", {'CsrfToken': Req.csrfToken()});
+                });
+                
+                App.use('/', function(Err, Req, Res, Next) {
+                    if(Err.code !== 'EBADCSRFTOKEN') 
+                    {
+                        next(Err);
+                        return;
+                    }
+                    else
+                    {
+                        Res.status(403).end();
+                    }
                 });
                 
                 Http.createServer(App).listen(8080);

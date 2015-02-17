@@ -16,12 +16,14 @@ MIT License: https://raw.githubusercontent.com/Magnitus-/ExpressUser/master/Lice
                     <label>Password:</label>
                     <input type="text" name="Password" />
                 </fieldset>
+                <input type="hidden" name="_csrf" value="<%= CsrfToken %>">
                 <button>Submit</button>
             </form>
         </section>
         <section class="Logout">
             <form>
                 <h2>Logout</h2>
+                <input type="hidden" name="_csrf" value="<%= CsrfToken %>">
                 <button>Submit</button>
             </form>
         </section>
@@ -36,6 +38,7 @@ MIT License: https://raw.githubusercontent.com/Magnitus-/ExpressUser/master/Lice
                     <label>Password:</label>
                     <input type="text" name="Password" />
                 </fieldset>
+                <input type="hidden" name="_csrf" value="<%= CsrfToken %>">
                 <button>Submit</button>
             </form>
             <p class='Error'></p>
@@ -61,6 +64,7 @@ MIT License: https://raw.githubusercontent.com/Magnitus-/ExpressUser/master/Lice
                     <label>Old Password:</label>
                     <input type="text" name="Password" />
                 </fieldset>
+                <input type="hidden" name="_csrf" value="<%= CsrfToken %>">
                 <button>Submit</button>
             </form>
         </section>
@@ -77,6 +81,7 @@ MIT License: https://raw.githubusercontent.com/Magnitus-/ExpressUser/master/Lice
                     <label>Password:</label>
                     <input type="text" name="Password" />
                 </fieldset>
+                <input type="hidden" name="_csrf" value="<%= CsrfToken %>">
                 <button>Submit</button>
             </form>
         </section>
