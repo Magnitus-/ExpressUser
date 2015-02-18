@@ -152,6 +152,11 @@ If you are using HTML forms (which only support the GET and POST methods), you'l
 
 The dev-dependencies in the express-user-local project contain a complete stack for an out-of-the-box solution, minus the method handling of html forms.
 
+Example
+=======
+
+See express-user-local project for a working example using local authentication.
+
 Future
 ======
 
