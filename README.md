@@ -12,7 +12,7 @@ The API is very likely to change due to:
 
 - My eventual desire to decouple the response logic (return codes and content + logging) from the rest of the library in order to allow for specialized response plugins (ex: HTML forms, single-page clients with Ajax, collection+JSON hypermedia, etc)
 
-- While I do not foresee that many architectural changes for this, I do not rule them out entirely as I integrate the following features in my web applications:  email verification, csrf tokens, etc. 
+- While I do not foresee that many architectural changes for this, I do not rule them out entirely as I integrate the following features in my web applications:  email verification.
 
 Known Bug(s)
 ============
@@ -150,7 +150,7 @@ If you are using HTML forms (which only support the GET and POST methods), you'l
 
 - For a shortcut:
 
-The dev-dependencies contains a complete stack for an out-of-the-box solution, minus the method handling of html forms.
+The dev-dependencies in the express-user-local project contain a complete stack for an out-of-the-box solution, minus the method handling of html forms.
 
 Example
 =======
@@ -236,3 +236,9 @@ Added session sychronization support
 
 - Updated dev dependency of express-user-local to 0.0.1-alpha.7.
 - Modified example (client and server) to include csrf mitigation.
+
+0.0.1-alpha.11
+--------------
+
+- Moved example to express-user-local project
+- Removed dev dependencies tied to the example

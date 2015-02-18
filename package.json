@@ -1,6 +1,6 @@
 {
   "name": "express-user",
-  "version": "0.0.1-alpha.10",
+  "version": "0.0.1-alpha.11",
   "description": "Ressource Oriented Express Middleware to Manage Users.",
   "keywords": [
     "Express",
@@ -27,20 +27,7 @@
     "express": "~4.10.6",
     "express-access-control": "~1.0.0"
   },
-  "devDependencies": {
-    "nimble": "0.0.2",
-    "nodeunit": "~0.9.0",
-    "express-session": "~1.10.1",
-    "express-session-mongodb": "~1.3.2",
-    "user-store": "~1.2.0",
-    "body-parser": "~1.10.2",
-    "mongodb": "~1.4.30",
-    "express-user-local": "0.0.1-alpha.5",
-    "express-brute": "~0.5.2",
-    "express-brute-mongo": "~0.1.0",
-    "csurf": "~1.7.0",
-    "ejs": "~2.2.4"
-  },
+  "devDependencies": {},
   "license": "MIT",
   "directories": {
     "example": "example",
