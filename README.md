@@ -152,11 +152,6 @@ If you are using HTML forms (which only support the GET and POST methods), you'l
 
 The dev-dependencies in the express-user-local project contain a complete stack for an out-of-the-box solution, minus the method handling of html forms.
 
-Example
-=======
-
-While keeping in mind that details will probably change in the future, you can play with what is currently there, by running the Example.js server (you'll need the dev dependencies to run it) and going to the following adress in your browser: http://127.0.0.1:8080/
-
 Future
 ======
 
