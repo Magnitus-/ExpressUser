@@ -30,11 +30,15 @@ URL Map
 - PUT /Session/Self/User -> Login
 - DELETE /Session/Self/User -> Logout
 - GET /Users/:Field/:ID/Count -> Fetching the count of users with the given value for the given field
+- PUT /User/Self/Memberships/:Membership -> Adds Membership to the list of an account's memberships (using session to identify the account)
+- DELETE /User/Self/Memberships/:Membership -> Remove Membership to the list of an account's memberships (using session to identify the account)
 
 2) Admin URLs:
 - PATCH /User/:Field/:ID -> Account modification (using the ID of the given Field to identify the account)
 - DELETE /User/:Field/:ID -> Account deletion (using the ID of the given Field to identify the account)
 - GET /User/:Field/:ID -> Fetching account info (using the ID of the given Field to identify the account)
+- PUT /User/:Field/:ID/Memberships/:Membership -> Adds Membership to the list of an account's memberships (using the ID of the given Field to identify the account)
+- DELETE /User/:Field/:ID/Memberships/:Membership -> Remove Membership to the list of an account's memberships (using the ID of the given Field to identify the account)
 
 Architecture
 ============
@@ -79,6 +83,8 @@ As such, it should ensure that all the fields you expect for various actions (ex
 You should be as conservative as your application domains allows concerning what you'll accept.
 
 Also, you validator should ensure that for the route /Users/:Field/:ID/Count/, only publicly available information should be selectable for regular users (see express-user-local code for an implementation of this).
+
+Finally, the validator should be very selective about what values of Membership it allows for the /User/Self/Memberships/:Membership routes.
 
 Session Synchronization
 =======================
@@ -242,3 +248,8 @@ Added session sychronization support
 
 - Moved example to express-user-local project
 - Removed dev dependencies tied to the example
+
+0.0.1-alpha.12
+--------------
+
+- Added support for membership manipulation routes
