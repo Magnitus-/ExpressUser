@@ -253,3 +253,8 @@ Added session sychronization support
 --------------
 
 - Added support for membership manipulation routes
+
+0.0.1-alpha.13
+--------------
+
+- Moved the responsability to manage which fields are hidden for 'GET' requests to the validator.
