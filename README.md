@@ -32,8 +32,8 @@ URL Map
 - GET /Users/:Field/:ID/Count -> Fetching the count of users with the given value for the given field
 - PUT /User/Self/Memberships/:Membership -> Adds Membership to the list of an account's memberships (using session to identify the account)
 - DELETE /User/Self/Memberships/:Membership -> Remove Membership to the list of an account's memberships (using session to identify the account)
-- POST /User/Self/:SetField -> Generate a value (probably random) for the field designed by SetField for the logged in user.
-- POST /User/:Field/:ID/:SetField -> Generate a value (probably random) for the field designed by SetField for the user identified with the value ID of Field. Useful to recover password or email token.
+- POST /User/Self/Recovery/:SetField -> Internally behaves like PATCH /User/Self, but gives validator a recognisable route to perform recovery behavior and validation (including access control) on the 'SetField' field.
+- POST /User/:Field/:ID/Recovery/:SetField -> Internally behaves like PATCH /User/:Field/:ID (minus the admin access restriction), but gives validator a recognisable route to perform recovery behavior and validation (including access control) on the 'SetField' field.
 
 2) Admin URLs:
 - PATCH /User/:Field/:ID -> Account modification (using the ID of the given Field to identify the account)
@@ -268,3 +268,8 @@ Added session sychronization support
 - Added support for Responder.
 - Replaced response logic by feedback to pass to Responder.
 - Removed GetSerializer and CountSerialized constructor options. Moved them to Responder.
+
+0.0.1-alpha.15
+--------------
+
+- Changed POST /User/Self/:SetField and POST /User/:Field/:ID/:SetField routes to more semantically meaningful POST /User/Self/Recovery/:SetField and POST /User/:Field/:ID/Recovery/:SetField
