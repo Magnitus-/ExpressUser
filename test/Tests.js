@@ -1,6 +1,7 @@
 //Copyright (c) 2015 Eric Vallee <eric_vallee2003@yahoo.ca>
 //MIT License: https://raw.githubusercontent.com/Magnitus-/ExpressUser/master/License.txt
 
+var Nimble = require('nimble');
 var Express = require('express');
 var Http = require('http');
 var ExpressUser = require('../lib/ExpressUser');
@@ -76,7 +77,7 @@ function Setup(ValidationRoutes, ResponseRoutes, Callback)
                 App.get('/Session/Self/User', function(Req, Res, Next) {
                     if(Req.session.User)
                     {
-                        Res.json(Req.session.User);
+                        Res.status(200).json(Req.session.User);
                     }
                     else
                     {
@@ -348,35 +349,110 @@ exports.Main = {
         }, {'User': {'Username': 'SomeName'}}, true);
     },
     'Memberships': function(Test) {
-        Test.expect(2);
+        Test.expect(10);
         var Requester = new RequestHandler();
         Requester.Request('PUT', '/User/Self/Memberships/Banned', function(Status, Body) {
             Test.ok(Status===400 && Body.ErrType && Body.ErrType==="NoInsertion", "Confirming that adding membership to non-existent user on route PUT /User/Self/Memberships/:Membership triggers the right error.");
             Requester.Request('PUT', '/User/Username/SomeName/Memberships/Banned', function(Status, Body) {
                 Test.ok(Status===400 && Body.ErrType && Body.ErrType==="NoInsertion", "Confirming that adding membership to non-existent user on route PUT /User/:Field/:ID/Memberships/:Membership triggers the right error.");
                 Requester.Request('POST', '/Users', function(Status, Body) {
-                    //Remove non-existent membership of user
-                    //Add membership to user
-                    //Remove membership to user
-                    Test.done();
+                    Requester.Request('DELETE', '/User/Self/Memberships/Banned', function(Status, Body) {
+                        //Might eventually want to change it to report an error like NoMembership
+                        Test.ok(Status===200, "Confirming that deleting non-existent membership on route DELETE /User/Self/Memberships/:Membership works as expected.");
+                        Requester.Request('DELETE', '/User/Username/SomeName/Memberships/Banned', function(Status, Body) {
+                            //Might eventually want to change it to report an error like NoMembership
+                            Test.ok(Status===200, "Confirming that deleting non-existent membership on route DELETE /User/:Field/:ID/Memberships/:Membership works as expected.");
+                            Requester.Request('PUT', '/User/Self/Memberships/Banned1', function(Status, Body) {
+                                Context['UserStore'].Get({'Username': 'SomeName'}, function(Err, User) {
+                                    Test.ok(Status===200&&User.Memberships.some(function(Item) {
+                                        return Item==="Banned1";
+                                    }), "Confirming that route PUT /User/Self/Memberships/:Membership works for adding memberships");
+                                    Requester.Request('PUT', '/User/Username/SomeName/Memberships/Banned2', function(Status, Body) {
+                                        Context['UserStore'].Get({'Username': 'SomeName'}, function(Err, User) {
+                                            Test.ok(Status===200&&User.Memberships.some(function(Item) {
+                                                return Item==="Banned2";
+                                            }), "Confirming that route PUT /User/:Field/:ID/Memberships/:Membership works for adding memberships");
+                                            Requester.Request('PUT', '/User/Self/Memberships/Banned1', function(Status, Body) {
+                                                //Might eventually want to change it to report an error like MembershipExists
+                                                Test.ok(Status===200, "Confirming that inserting an already existing membership in route PUT /User/Self/Memberships/:Membership behaves as expected.");
+                                                Requester.Request('PUT', '/User/Username/SomeName/Memberships/Banned1', function(Status, Body) {
+                                                    //Might eventually want to change it to report an error like MembershipExists
+                                                    Test.ok(Status===200, "Confirming that inserting an already existing membership in route PUT /User/:Field/:ID/Memberships/:Membership behaves as expected.");
+                                                    Requester.Request('DELETE', '/User/Self/Memberships/Banned1', function(Status, Body) {
+                                                        Context['UserStore'].Get({'Username': 'SomeName'}, function(Err, User) {
+                                                            Test.ok(Status===200&&User.Memberships.every(function(Item) {
+                                                                return Item!=="Banned1";
+                                                            }), "Confirming that route DELETE /User/Self/Memberships/:Membership works for deleting memberships");
+                                                            Requester.Request('DELETE', '/User/Username/SomeName/Memberships/Banned2', function(Status, Body) {
+                                                                Context['UserStore'].Get({'Username': 'SomeName'}, function(Err, User) {
+                                                                    Test.ok(Status===200&&User.Memberships.every(function(Item) {
+                                                                        return Item!=="Banned2";
+                                                                    }), "Confirming that route DELETE /User/:Field/:ID/Memberships/:Membership works for deleting memberships");
+                                                                    Test.done();
+                                                                });
+                                                            }, {'User': {'Username': 'SomeName'}, 'Membership': 'Banned2'}, true);
+                                                        });
+                                                    }, {'User': {'Username': 'SomeName'}, 'Membership': 'Banned1'}, true);
+                                                }, {'User': {'Username': 'SomeName'}, 'Membership': 'Banned1'}, true);
+                                            }, {'User': {'Username': 'SomeName'}, 'Membership': 'Banned1'}, true);
+                                        });
+                                    }, {'User': {'Username': 'SomeName'}, 'Membership': 'Banned2'}, true);
+                                });
+                            }, {'User': {'Username': 'SomeName'}, 'Membership': 'Banned1'}, true);     
+                        }, {'User': {'Username': 'SomeName'}, 'Membership': 'Banned'}, true);
+                    }, {'User': {'Username': 'SomeName'}, 'Membership': 'Banned'}, true);
                 }, {'User': {'Username': 'SomeName', 'Email': 'SomeEmail@Email.com', 'Password': 'Qwerty!'}}, false);
             }, {'User': {'Username': 'SomeName'}, 'Membership': 'Banned'}, true);
         }, {'User': {'Username': 'SomeName'}, 'Membership': 'Banned'}, true);
     },
     'SessionSync': function(Test) {
-        Test.expect(0);
-        //Create User
-        //Login
-        //Modify user
-        //Check session
-        //Delete user
-        //Check session
-        Test.done();
+        Test.expect(2);
+        var Requester = new RequestHandler();
+        Requester.Request('POST', '/Users', function(Status, Body) {
+            Requester.Request('PUT', '/Session/Self/User', function(Status, Body) {
+                Requester.Request('PATCH', '/User/Username/SomeName', function(Status, Body) {
+                    Requester.Request('GET', '/Session/Self/User', function(Status, Body) {
+                        Test.ok(Status===200 && Body.Username && Body.Username === 'SomeName2' && Body.Email && Body.Email === 'SomeEmail2@Email.com', "Confirming that sessions are kept in sync during profile updates");
+                        Requester.Request('DELETE', '/User/Username/SomeName', function(Status, Body) {
+                            Requester.Request('GET', '/Session/Self/User', function(Status, Body) {
+                                Test.ok(Status===400, "Confirming that sessions are kept in sync during profile deletions");
+                                Test.done();
+                            }, null, true);
+                        }, {'User': {'Username': 'SomeName2'}}, false);
+                    }, null, true);
+                }, {'User': {'Username': 'SomeName'}, 'Update': {'Username': 'SomeName2', 'Email': 'SomeEmail2@Email.com'}}, false);
+            }, {'User': {'Username': 'SomeName'}}, false);
+        }, {'User': {'Username': 'SomeName', 'Email': 'SomeEmail@Email.com', 'Password': 'Qwerty!'}}, false);
     },
     'ValidationCheck': function(Test) {
-        Test.expect(0);
-        //Check all routes without session res.locals.ExpressUser
-        Test.done();
+        var Routes = [['POST', '/Users'],
+                      ['PATCH', '/User/Self'],
+                      ['DELETE', '/User/Self'],
+                      ['GET', '/User/Self'],
+                      ['PATCH', '/User/Username/Test'],
+                      ['DELETE', '/User/Username/Test'],
+                      ['GET', '/User/Username/Test'],
+                      ['PUT', '/User/Self/Memberships/Test'],
+                      ['DELETE', '/User/Self/Memberships/Test'],
+                      ['PUT', '/User/Username/Test/Memberships/Test'],
+                      ['DELETE', '/User/Username/Test/Memberships/Test'],
+                      ['POST', '/User/Self/Recovery/Test'],
+                      ['POST', '/User/Username/Test/Recovery/Test'],
+                      ['PUT', '/Session/Self/User'],
+                      ['DELETE', '/Session/Self/User'],
+                      ['GET', '/Users/Username/SomeName/Count']];
+        Test.expect(Routes.length);
+        var Requester = new RequestHandler();
+        var Calls = [];
+        Routes.forEach(function(Route) {
+            Calls.push(function(Callback) {
+                Requester.Request(Route[0], Route[1], function(Status, Body) {
+                    Test.ok(Status===400 && Body.ErrType && Body.ErrType === "NotValidated", "Confirming validation check is performed on route "+Route[0]+" "+Route[1]+".");
+                    Callback();
+                }, null, true);
+            });
+        });
+        Nimble.series(Calls, function(Err) {Test.done();});
     }
 };
 

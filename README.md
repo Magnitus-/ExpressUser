@@ -45,16 +45,44 @@ Usage
 Constructor
 -----------
 
-...
+The module acts as its constructor.
 
-TO DO
+It returns a router which can be passed as an argument to Express' app.use method.
+
+It's signature is: 
+
+```javascript
+function(<UserStore>, <Options>);
+```
+
+The 'UserStore' argument is a user store that is either the user-store library or another that has the same external API.
+
+'Options' is an object containing 2 properties:
+
+- 'Validator'
+
+The validator that performs the following for enabled routes: access control, input checks and sets the correct properties on the res.locals.ExpressUser object that allows express-user to do its work.
+
+- 'Responder'
+
+The responder that returns a response to the client (both status code and body) based on whether or not express-user or the validator threw an error route and what properties they defined on the res.locals.ExpressUser object.
 
 Session Route
 -------------
 
-...
+This method of the express-user module returns a route that can be passed to Express' app.use method.
 
-TO DO
+It's function is to keep a user's session synchronized with his/her profile.
+
+It's signature is:
+
+```javascript
+ExpressUser.SessionRoute(<UserStore>, <UniqueProperty>)
+```
+
+The 'UserStore' argument is a user store that is either the user-store library or another that has the same external API.
+
+The 'UniqueProperty' argument is a string that is the name of a field that is present for all users and unique to each user.
 
 Example
 -------
@@ -104,9 +132,11 @@ API With Other Components
 Expected method
 ---------------
 
-...
+Both the Validator and the Responder that are passed to the express-user constructor are expected to be callable (ie, functions) and take a router (on which express-user defines its own routes) as their sole argument.
 
-TO DO
+From there, they can attach their own routes to interact with express-user and each other.
+
+The convention is that express-user calls the validator which sets its routes first. Then, express-user sets its own routes and finally, it calls the responder which sets its routes last.
 
 Intercomponent Communication: Input
 -----------------------------------
@@ -119,48 +149,48 @@ Below are the input expectations from various routes:
 
 - POST /Users
 
-res.locals.User: should contain the fields of the new user
+res.locals.ExpressUser.User: should contain the fields of the new user
 
 - PATCH /User/Self and PATCH /User/:Field/:ID
 
-res.locals.User: should contain the fields identifying the user to modify
-res.locals.Update: Should contain the new values of fields that are to be modified
+res.locals.ExpressUser.User: should contain the fields identifying the user to modify
+res.locals.ExpressUser.Update: Should contain the new values of fields that are to be modified
 
 - DELETE /User/Self and DELETE /User/:Field/:ID
 
-res.locals.User: Should contain the fields identifying the user to delete
+res.locals.ExpressUser.User: Should contain the fields identifying the user to delete
 
 - GET /User/Self and GET /User/:Field/:ID
 
-res.locals.User: Should contain the fields identifying the user to get
+res.locals.ExpressUser.User: Should contain the fields identifying the user to get
 
 - PUT /Session/Self/User
 
-res.locals.User: Should contain the fields identifying the user to store in the session
+res.locals.ExpressUser.User: Should contain the fields identifying the user to store in the session
 
 - DELETE /Session/Self/User
 
-No input required. Will just delete the req.session.User, if present.
+No input required beyond the res.locals.ExpressUser object existing. Will just delete the req.session.User, if present.
 
 - GET /Users/:Field/:ID/Count
 
-res.locals.User: Should contain the fields that define the users you wish to count
+res.locals.ExpressUser.User: Should contain the fields that define the users you wish to count
 
 - PUT /User/Self/Memberships/:Membership and PUT /User/:Field/:ID/Memberships/:Membership
 
-res.locals.User: should contain the fields identifying the user to modify
-res.locals.Membership: the membership you wish to add
+res.locals.ExpressUser.User: should contain the fields identifying the user to modify
+res.locals.ExpressUser.Membership: the membership you wish to add
 
 - DELETE /User/Self/Memberships/:Membership and DELETE /User/:Field/:ID/Memberships/:Membership
 
-res.locals.User: should contain the fields identifying the user to modify
-res.locals.Membership: the membership you wish to remove
+res.locals.ExpressUser.User: should contain the fields identifying the user to modify
+res.locals.ExpressUser.Membership: the membership you wish to remove
 
 - POST /User/Self/Recovery/:SetField and POST /User/:Field/:ID/Recovery/:SetField
 
-res.locals.User: should contain the fields identifying the user to modify
-res.locals.Update: Should contain the new values of fields that are to be modified
-
+res.locals.ExpressUser.User: should contain the fields identifying the user to modify
+res.locals.ExpressUser.Update: Should contain the new values of fields that are to be modified
+ 
 Intercomponent Communication: Output
 ------------------------------------
 
@@ -170,7 +200,7 @@ Below are outputs for various routes:
 
 - All routes
 
-If res.locals.Express is not defined by the validator, an error route will be triggered with Err.Source having the value of 'ExpressUser' and Err.Type having the value of 'NotValidated'.
+If res.locals.ExpressUser is not defined by the validator, an error route will be triggered with Err.Source having the value of 'ExpressUser' and Err.Type having the value of 'NotValidated'.
 
 If user-store returns an error that isn't a constraint error, an error route will be triggered and the error will be passed to it.
 
@@ -178,7 +208,7 @@ If user-store returns an error that isn't a constraint error, an error route wil
 
 If a constraint error is encountered (ie, unique or null constraint violated), an error route will be triggered with Err.Source having the value of 'UserStore' and Err.Type having the value of 'StoreConstraint'.
 
-If no error was encountered while manipulating the store, but the user was not inserted,  an error route will be triggered with Err.Source having the value of 'ExpressUser' and Err.Type having the value of 'NoInsertion'.
+If no error was encountered while manipulating the store, but the user was not inserted, an error route will be triggered with Err.Source having the value of 'ExpressUser' and Err.Type having the value of 'NoInsertion'.
 
 Otherwise, no properties are set.
 
@@ -186,13 +216,27 @@ Otherwise, no properties are set.
 
 If a constraint error is encountered (ie, unique or null constraint violated), an error route will be triggered with Err.Source having the value of 'UserStore' and Err.Type having the value of 'StoreConstraint'.
 
-If no error was encountered while manipulating the store, but the user was not inserted,  an error route will be triggered with Err.Source having the value of 'ExpressUser' and Err.Type having the value of 'NoInsertion'.
+If no error was encountered while manipulating the store, but the user was not inserted, an error route will be triggered with Err.Source having the value of 'ExpressUser' and Err.Type having the value of 'NoUpdate'.
 
 Otherwise, no properties are set.
 
+- DELETE /User/Self and DELETE /User/:Field/:ID
+
+If no error was encountered while manipulatinbg the store, but no user was found to update, an error route will be triggered with Err.Source having the value of 'ExpressUser' and Err.Type having the value of 'NoDelete'.
+
+Otherwise, no properties are set.
+
+- GET /User/Self and GET /User/:Field/:ID
+
+If no error was encountered while manipulating the store, but the user was not found, an error route will be triggered with Err.Source having the value of 'ExpressUser' and Err.Type having the value of 'NoUser'.
+
+Otherwise, the retrieved user is stored in the property res.locals.ExpressUser.Result.
+
 ...
 
-- Further Note: that whatever is passed to express-user by the validator is also passed to the responder and if an error is encountered by the validator, it can bypass express-user entirely and go straight to the responder by triggering an error route.
+- Further Note 
+
+Whatever is passed to express-user by the validator is also passed to the responder and if an error is encountered by the validator, it can bypass express-user entirely and go straight to the responder by triggering an error route.
 
 TO FINISH
 
@@ -277,16 +321,22 @@ See the example in the express-user-local project for a working example using lo
 Versions History
 ================
 
+1.0.1
+-----
+
+- Added check to make sure DELETE /Session/Self/User goes through the validator
+- Finished tests
+- Corrected errors in documentation and added more to it.
+
 1.0.0
 -----
 
-- Fixed a bug where session existence check wouldn't be performed for some of the Self routes
 - Moved access control on admin URLs to validator and removed Express-Access-Control as a dependency
 - Moved connection security verification to validator
 - Moved Roles constructor option to Validator
 - Added support for constraint errors on PATCH routes
 - Added dev dependencies to run unit tests
-- Started unit tests
+- Started tests
 - Started final version of documentation
 - Updated dev dependency of user-store to version 1.3.0
 
