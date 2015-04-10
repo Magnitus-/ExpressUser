@@ -274,8 +274,6 @@ Otherwise, no propertie are set.
 
 Whatever is passed to express-user by the validator is also passed to the responder and if an error is encountered by the validator, it can bypass express-user entirely and go straight to the responder by triggering an error route.
 
-TO FINISH
-
 Dependencies
 ============
 
