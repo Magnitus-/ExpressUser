@@ -5,6 +5,7 @@ var Nimble = require('nimble');
 var Express = require('express');
 var Http = require('http');
 var ExpressUser = require('../lib/ExpressUser');
+var UserProperties = require('user-properties');
 var UserStore = require('user-store');
 var MongoDB = require('mongodb');
 var Session = require('express-session');
@@ -28,8 +29,11 @@ function Middleware(Routes)
 
 function Setup(ValidationRoutes, ResponseRoutes, Callback)
 {
+    var UserSchema = UserProperties({'Email': {'Required': true, 'Unique': true, 'Privacy': UserProperties.Privacy.Private},
+                      'Username': {'Required': true, 'Unique': true, 'Privacy': UserProperties.Privacy.Public},
+                      'Password': {'Required': true, 'Privacy': UserProperties.Privacy.Secret, 'Retrievable': false}});
     MongoDB.MongoClient.connect("mongodb://localhost:27017/"+RandomIdentifier, {native_parser:true}, function(Err, DB) {
-        UserStore(DB, {'Email': {'Unique': 1, 'NotNull': 1}, 'Username': {'Unique': 1, 'NotNull': 1}, 'Password': {'NotNull': 1}}, function(Err, UserStoreInst) {
+        UserStore(DB, UserSchema, function(Err, UserStoreInst) {
             SessionStore(DB, function(Err, SessionStoreInst) {
                 Context['DB'] = DB;
                 Context['UserStore'] = UserStoreInst;

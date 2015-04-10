@@ -230,9 +230,45 @@ Otherwise, no properties are set.
 
 If no error was encountered while manipulating the store, but the user was not found, an error route will be triggered with Err.Source having the value of 'ExpressUser' and Err.Type having the value of 'NoUser'.
 
-Otherwise, the retrieved user is stored in the property res.locals.ExpressUser.Result.
+Otherwise, the retrieved user (object with the user's properties as its properties) is stored in the property res.locals.ExpressUser.Result.
 
-...
+- GET /Users/:Field/:ID/Count
+
+If no error was encountered while manipulating the store, but the user was not found, an error route will be triggered with Err.Source having the value of 'ExpressUser' and Err.Type having the value of 'NoUser'.
+
+Otherwise, the count of users satisfying the selection (numerical primitive) is stored in the property res.locals.ExpressUser.Result.
+
+- PUT /User/Self/Memberships/:Membership and PUT /User/:Field/:ID/Memberships/:Membership
+
+If no error was encountered while manipulating the store, but the user to insert the membership to was not found, an error route will be triggered with Err.Source having the value of 'ExpressUser' and Err.Type having the value of 'NoInsertion'.
+
+Otherwise, no propertie are set.
+
+Currently, express-user doesn't provide feedback to indicate that a membership insertion did nothing due to the membership already being present.
+
+- DELETE /User/Self/Memberships/:Membership and DELETE /User/:Field/:ID/Memberships/:Membership
+
+If no error was encountered while manipulating the store, but the user to remove the membership from was not found, an error route will be triggered with Err.Source having the value of 'ExpressUser' and Err.Type having the value of 'NoDeletion'.
+
+Otherwise, no propertie are set.
+
+Currently, express-user doesn't provide feedback to indicate that a membership removal did nothing due to the membership already being absent.
+
+- POST /User/Self/Recovery/:SetField and POST /User/:Field/:ID/Recovery/:SetField
+
+Same as PATCH /User/Self and PATCH /User/:Field/:ID
+
+- PUT /Session/Self/User
+
+If no error was encountered while manipulating the store, but the user to insert into the session was not found, an error route will be triggered with Err.Source having the value of 'ExpressUser' and Err.Type having the value of 'NoUser'.
+
+Otherwise, no propertie are set.
+
+- DELETE /Session/Self/User
+
+If the req.session.User is a falsey value, an error route will be triggered with Err.Source having the value of 'ExpressUser' and Err.Type having the value of 'NoSessionUser'.
+
+Otherwise, no propertie are set.
 
 - Further Note 
 
@@ -320,6 +356,12 @@ See the example in the express-user-local project for a working example using lo
 
 Versions History
 ================
+
+1.0.2
+-----
+- Added user-properties to dev dependencies
+- Updated user-store dev dependency to version 2.0.0 and adjusted tests accordingly
+- Finished doc
 
 1.0.1
 -----
