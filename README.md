@@ -154,6 +154,7 @@ res.locals.ExpressUser.User: should contain the fields of the new user
 - PATCH /User/Self and PATCH /User/:Field/:ID
 
 res.locals.ExpressUser.User: should contain the fields identifying the user to modify
+
 res.locals.ExpressUser.Update: Should contain the new values of fields that are to be modified
 
 - DELETE /User/Self and DELETE /User/:Field/:ID
@@ -179,16 +180,19 @@ res.locals.ExpressUser.User: Should contain the fields that define the users you
 - PUT /User/Self/Memberships/:Membership and PUT /User/:Field/:ID/Memberships/:Membership
 
 res.locals.ExpressUser.User: should contain the fields identifying the user to modify
+
 res.locals.ExpressUser.Membership: the membership you wish to add
 
 - DELETE /User/Self/Memberships/:Membership and DELETE /User/:Field/:ID/Memberships/:Membership
 
 res.locals.ExpressUser.User: should contain the fields identifying the user to modify
+
 res.locals.ExpressUser.Membership: the membership you wish to remove
 
 - POST /User/Self/Recovery/:SetField and POST /User/:Field/:ID/Recovery/:SetField
 
 res.locals.ExpressUser.User: should contain the fields identifying the user to modify
+
 res.locals.ExpressUser.Update: Should contain the new values of fields that are to be modified
  
 Intercomponent Communication: Output
@@ -234,9 +238,7 @@ Otherwise, the retrieved user (object with the user's properties as its properti
 
 - GET /Users/:Field/:ID/Count
 
-If no error was encountered while manipulating the store, but the user was not found, an error route will be triggered with Err.Source having the value of 'ExpressUser' and Err.Type having the value of 'NoUser'.
-
-Otherwise, the count of users satisfying the selection (numerical primitive) is stored in the property res.locals.ExpressUser.Result.
+The count of users satisfying the selection (numerical primitive) is stored in the property res.locals.ExpressUser.Result.
 
 - PUT /User/Self/Memberships/:Membership and PUT /User/:Field/:ID/Memberships/:Membership
 
@@ -283,11 +285,24 @@ Dependencies
 
 - Either the user-store project (and accompanying dependencies) or a user store that has the same API as the user-store project 
 
-- A route to handle sessions that will initialize the req.session attribute. The express-session project will do this for you.
-
 - For an "out of the box" solution, you'll also need a validator and a responder. express-user-local and express-user-local-basic can provide those for you for local authentication.
 
 - The library uses the PUT, DELETE and PATCH HTTP methods, which are traditionally not supported in submitted HTML forms. If you use those, you'll need to use a library like method-override.
+
+[1] If it doesn't work for later version, please let me know.
+
+Session Dependency
+------------------
+
+The library provides optional session support in 3 ways:
+
+- Session route to synchronize a user's profile with the user information in his session
+- A PUT /Session/Self/User for session-based login
+- A DELETE /Session/Self/User for session-based logout
+
+For session support to work, you need either the express-session library or another that behaves in the following manner: req.session is defined and manipulating it results in persistent session changes.
+
+Note that the remainder of this library is not dependent on your using its session support so you opt not to use it and still use the rest of the library. You simply need not to handle the session routes in your validator and express-user will trigger an error handler when those routes are encountered, which you can deal with in your validator (and maybe return 404).
 
 Security Note About Validator
 =============================
@@ -322,6 +337,8 @@ Also, any route that the validator doesn't handle will return a 'NoValidation' e
 Session Synchronization
 =======================
 
+For those using session functionality provided by express-user:
+
 For a smooth seemless functionality to users, sessions and user accounts they point to need to be in sync, such that when accounts are updated or deleted, this is reflected in sessions pointing to it.
 
 The implemented solution right now is the ExpressUser.SessionRoute route, which should be placed after session initialization, but before any logic that uses sessions.
@@ -354,6 +371,11 @@ See the example in the express-user-local project for a working example using lo
 
 Versions History
 ================
+
+1.0.3
+-----
+
+Documentation improvements: Corrected incorrect information for counting error and clarified session dependencies.
 
 1.0.2
 -----
