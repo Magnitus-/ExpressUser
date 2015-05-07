@@ -366,13 +366,14 @@ For the above reasons, when I get around to implementing this, it will be an opt
 
 Given that this would be an optimisation rather than a requirement for functionality, I'll probably finish functionality before I get around to implementing this.
 
-Example
-=======
-
-See the example in the express-user-local project for a working example using local authentication.
-
 Versions History
 ================
+
+1.1.1
+-----
+
+- Updated express depdencency to a suitable range of versions
+- Removed example reference in documentation.
 
 1.1.0
 -----
