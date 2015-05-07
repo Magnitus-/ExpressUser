@@ -18,6 +18,17 @@ var RandomIdentifier = 'ExpressUserTests'+Math.random().toString(36).slice(-8);
 
 var SessionStoreOptions = {'TimeToLive': 300, 'IndexSessionID': true, 'DeleteFlags': true};
 
+function In()
+{
+    var InList = arguments[0];
+    var CheckList = Array.prototype.slice.call(arguments, 1);
+    return(CheckList.every(function(CheckItem) {
+        return(InList.some(function(RefItem) {
+            return RefItem===CheckItem;
+        }));
+    }));
+}
+
 function Middleware(Routes)
 {
     return(function(Router, Roles) {
@@ -195,6 +206,10 @@ var BodyRoute = {'Method': 'use', 'Path': '/', 'Call': function(Req, Res, Next) 
         if(Req.body.Membership)
         {
             Res.locals.ExpressUser.Membership = Req.body.Membership;
+        }
+        if(Req.body.Memberships)
+        {
+            Res.locals.ExpressUser.Memberships = Req.body.Memberships;
         }
     }
     Next();
@@ -408,6 +423,23 @@ exports.Main = {
                 }, {'User': {'Username': 'SomeName', 'Email': 'SomeEmail@Email.com', 'Password': 'Qwerty!'}}, false);
             }, {'User': {'Username': 'SomeName'}, 'Membership': 'Banned'}, true);
         }, {'User': {'Username': 'SomeName'}, 'Membership': 'Banned'}, true);
+    },
+    'UserModification + Memberships': function(Test) {
+        Test.expect(2);
+        var Requester = new RequestHandler();
+        Requester.Request('POST', '/Users', function(Status, Body) {
+            Requester.Request('PATCH', '/User/Self', function(Status, Body) {
+                Context['UserStore'].Get({'Username': 'SomeName2'}, function(Err, User) {
+                    Test.ok(User && User.Memberships && User.Memberships.length === 2 && In(User.Memberships, 'Test1', 'Test2'), "Confirming that PATCH requests with Memberships manipulations work, part 1.");
+                    Requester.Request('PATCH', '/User/Self', function(Status, Body) {
+                        Context['UserStore'].Get({'Username': 'SomeName3'}, function(Err, User) {
+                            Test.ok(User && User.Memberships && User.Memberships.length === 1 && In(User.Memberships, 'Test1'), "Confirming that PATCH requests with Memberships manipulations work, part 2.");
+                            Test.done();
+                        });
+                    }, {'User': {'Username': 'SomeName2'}, 'Update': {'Username': 'SomeName3'}, 'Memberships': {'Remove': 'Test2'}});
+                });
+            }, {'User': {'Username': 'SomeName'}, 'Update': {'Username': 'SomeName2'}, 'Memberships': {'Add': ['Test1', 'Test2']}});
+        }, {'User': {'Username': 'SomeName', 'Email': 'SomeEmail@Email.com', 'Password': 'Qwerty!'}}, true);
     },
     'SessionSync': function(Test) {
         Test.expect(2);

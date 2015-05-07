@@ -157,6 +157,8 @@ res.locals.ExpressUser.User: should contain the fields identifying the user to m
 
 res.locals.ExpressUser.Update: Should contain the new values of fields that are to be modified
 
+res.locals.ExpressUser.Memberships: Optional input that specifies memberships to add/remove. Its expected format is the same as the 'Memberships' argument for the 'UpdateAtomic' method in the 'user-store' project. API compliance with user-store version 2.1.0 or higher is required.
+
 - DELETE /User/Self and DELETE /User/:Field/:ID
 
 res.locals.ExpressUser.User: Should contain the fields identifying the user to delete
@@ -279,9 +281,9 @@ Whatever is passed to express-user by the validator is also passed to the respon
 Dependencies
 ============
 
-- A recent version of Node.js (version 0.10.25 is installed on my machine) [1]
+- A recent version of Node.js (version 0.10.25 is installed on my machine) \[1\]
 
-- A recent version of Express.js (version 4.x, the library uses Express.Router()) [1]
+- A recent version of Express.js (version 4.x, the library uses Express.Router()) \[1\]
 
 - Either the user-store project (and accompanying dependencies) or a user store that has the same API as the user-store project 
 
@@ -302,7 +304,7 @@ The library provides optional session support in 3 ways:
 
 For session support to work, you need either the express-session library or another that behaves in the following manner: req.session is defined and manipulating it results in persistent session changes.
 
-Note that the remainder of this library is not dependent on your using its session support so you opt not to use it and still use the rest of the library. You simply need not to handle the session routes in your validator and express-user will trigger an error handler when those routes are encountered, which you can deal with in your validator (and maybe return 404).
+Note that the remainder of this library is not dependent on your using its session support so you opt not to use it and still use the rest of the library. You simply need not to handle the session routes in your validator and express-user will trigger an error handler when those routes are encountered, which you can deal with in your responder (probably by returning 404).
 
 Security Note About Validator
 =============================
@@ -371,6 +373,13 @@ See the example in the express-user-local project for a working example using lo
 
 Versions History
 ================
+
+1.1.0
+-----
+
+- Added support for the validator to indicate membership(s) to add/remove in the PATCH /User/Self and PATCH /User/:Field/:ID routes
+- Update dev dependency for user-store to version 2.1.0
+- Corrected small error in documentation
 
 1.0.3
 -----
