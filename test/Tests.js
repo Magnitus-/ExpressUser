@@ -211,12 +211,16 @@ var BodyRoute = {'Method': 'use', 'Path': '/', 'Call': function(Req, Res, Next) 
         {
             Res.locals.ExpressUser.Memberships = Req.body.Memberships;
         }
+        if(Req.body.GetUpdatedUser)
+        {
+            Res.locals.ExpressUser.GetUpdatedUser = Req.body.GetUpdatedUser;
+        }
     }
     Next();
 }};
 
 var SuccessRoute = {'Method': 'use', 'Path': '/', 'Call': function(Req, Res, Next) {
-    if(!(Res.locals.ExpressUser && Res.locals.ExpressUser.Result!==undefined))
+    if(!(Res.locals.ExpressUser && Res.locals.ExpressUser.Result !== undefined))
     {
         Res.status(200).end();
     }
@@ -489,6 +493,39 @@ exports.Main = {
             });
         });
         Nimble.series(Calls, function(Err) {Test.done();});
+    },
+    'GetUpdatedUser': function(Test) {
+        Test.expect(16);
+        var Requester = new RequestHandler();
+        function TestRoute(Method, URL, Name, Callback)
+        {
+            Requester.Request('POST', '/Users', function(Status, Body) {
+                Requester.Request(Method, URL, function(Status, Body) {
+                    Test.ok(Body && Body.Username === (Name+2) && Body.Email === (Name+2+'@Email.com'), "Confirming that User is retrieved when GetUpdatedUser is true for "+Method+" "+URL+" route.");
+                    Requester.Request(Method, URL, function(Status, Body) {
+                        Test.ok(Body && Body.ErrType && Body.ErrType === 'NoUpdate', "Confirming that proper error mechanism is triggered for updating non-existent user when GetUpdatedUser is true for "+Method+" "+URL+" route.");
+                        Requester.Request(Method, URL, function(Status, Body) {
+                            Test.ok(Status === 200 && Body === null, "Confirming that User is not retrieved when GetUpdatedUser is falsey "+Method+" "+URL+" route.");
+                            Requester.Request('POST', '/Users', function(Status, Body) {
+                                Requester.Request(Method, URL, function(Status, Body) {
+                                    Test.ok(Body && Body.ErrSource === 'UserStore' && Body.ErrType === 'StoreConstraint', "Confirming that proper error mechanism is triggered for violating user store constraint when GetUpdatedUser is true for "+Method+" "+URL+" route.");
+                                    Callback();
+                                }, {'User': {'Username': Name+3}, 'Update': {'Username': Name+100, 'Email': Name+100+'@Email.com'}, 'GetUpdatedUser': true}, true);
+                            }, {'User': {'Username': Name+100, 'Email': Name+100+'@Email.com', 'Password': 'Qwerty!'}}, true);
+                        }, {'User': {'Username': Name+2}, 'Update': {'Username': Name+3, 'Email': Name+3+'@Email.com'}, 'GetUpdatedUser': false}, true);
+                    }, {'User': {'Username': Name}, 'Update': {'Username': Name+2, 'Email': Name+2+'@Email.com'}, 'GetUpdatedUser': true}, true);    
+                }, {'User': {'Username': Name}, 'Update': {'Username': Name+2, 'Email': Name+2+'@Email.com'}, 'GetUpdatedUser': true}, true);
+            }, {'User': {'Username': Name, 'Email': Name+'@Email.com', 'Password': 'Qwerty!'}}, true);
+        }
+        TestRoute('PATCH', '/User/Username/SomeName', 'SomeName', function() {
+            TestRoute('PATCH', '/User/Self', 'DoNotCare', function() {
+                TestRoute('POST', '/User/Self/Recovery/Password', 'HahaHaha', function() {
+                    TestRoute('POST', '/User/Self/Recovery/Password', 'HihiHihi', function() {
+                        Test.done();
+                    });
+                });
+            });
+        });
     }
 };
 

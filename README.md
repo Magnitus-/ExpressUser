@@ -159,6 +159,8 @@ res.locals.ExpressUser.Update: Should contain the new values of fields that are 
 
 res.locals.ExpressUser.Memberships: Optional input that specifies memberships to add/remove. Its expected format is the same as the 'Memberships' argument for the 'UpdateAtomic' method in the 'user-store' project. API compliance with user-store version 2.1.0 or higher is required.
 
+If res.locals.ExpressUser.GetUpdatedUser contains a truthy value, the user's entire updated profile will be returned in res.locals.ExpressUser.Result
+
 - DELETE /User/Self and DELETE /User/:Field/:ID
 
 res.locals.ExpressUser.User: Should contain the fields identifying the user to delete
@@ -196,6 +198,8 @@ res.locals.ExpressUser.Membership: the membership you wish to remove
 res.locals.ExpressUser.User: should contain the fields identifying the user to modify
 
 res.locals.ExpressUser.Update: Should contain the new values of fields that are to be modified
+
+If res.locals.ExpressUser.GetUpdatedUser contains a truthy value, the user's entire updated profile will be returned in res.locals.ExpressUser.Result
  
 Intercomponent Communication: Output
 ------------------------------------
@@ -224,7 +228,7 @@ If a constraint error is encountered (ie, unique or null constraint violated), a
 
 If no error was encountered while manipulating the store, but the user was not inserted, an error route will be triggered with Err.Source having the value of 'ExpressUser' and Err.Type having the value of 'NoUpdate'.
 
-Otherwise, no properties are set.
+Otherwise, no properties are set except the following: if res.locals.ExpressUser.GetUpdatedUser was a truthy value, res.locals.ExpressUser.Result will be defined and it will contain the an object representing the updated user.
 
 - DELETE /User/Self and DELETE /User/:Field/:ID
 
@@ -285,13 +289,15 @@ Dependencies
 
 - A recent version of Express.js (version 4.x, the library uses Express.Router()) \[1\]
 
-- Either the user-store project (and accompanying dependencies) or a user store that has the same API as the user-store project 
+- Either the user-store project (and accompanying dependencies) or a user store that has the same API as the user-store project \[2\]
 
 - For an "out of the box" solution, you'll also need a validator and a responder. express-user-local and express-user-local-basic can provide those for you for local authentication.
 
 - The library uses the PUT, DELETE and PATCH HTTP methods, which are traditionally not supported in submitted HTML forms. If you use those, you'll need to use a library like method-override.
 
-[1] If it doesn't work for later version, please let me know.
+\[1\] If it doesn't work for later version, please let me know.
+
+\[2\] Latest version of user-store is always preferable. While previously existing features don't require a user-store update, new features to this library are often dependent on new user-store features. I always update the dev dependency of user-store for tests when needed so release notes are a good indicator of which features require which version of user-store.
 
 Session Dependency
 ------------------
@@ -369,6 +375,12 @@ Given that this would be an optimisation rather than a requirement for functiona
 Versions History
 ================
 
+1.2.0
+-----
+
+- Added support for retrieving the user's entire updated profile (in case the responder needs it) for the PATCH /User/Self, PATCH /User/:Field/:ID, POST /User/Self/Recovery/:SetField and POST /User/:Field/:ID/Recovery/:SetField routes.
+- Updated dev dependency for user-store to version 2.4.2
+
 1.1.1
 -----
 
@@ -379,7 +391,7 @@ Versions History
 -----
 
 - Added support for the validator to indicate membership(s) to add/remove in the PATCH /User/Self and PATCH /User/:Field/:ID routes
-- Update dev dependency for user-store to version 2.1.0
+- Updated dev dependency for user-store to version 2.1.0
 - Corrected small error in documentation
 
 1.0.3
